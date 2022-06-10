@@ -6,24 +6,57 @@
 //
 
 import UIKit
+import PhotosUI
 
-class UploadVC: UIViewController {
+class UploadVC: UIViewController, PHPickerViewControllerDelegate {
 
+    
+    @IBOutlet weak var uploadImageView: UIImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        uploadImageView.backgroundColor = .gray
+        
+        uploadImageView.isUserInteractionEnabled = true
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(chooseImage))
+        uploadImageView.addGestureRecognizer(gestureRecognizer)
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @objc func chooseImage() {
+        
+        var config = PHPickerConfiguration()
+        config.selectionLimit = 1
+        config.filter = .images
+        
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = self
+        self.present(picker, animated: true, completion: nil)
+        
     }
-    */
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+       
+        
+        
+        let itemProvider = results.first?.itemProvider
+        
+        if let itemProvider = itemProvider, itemProvider.canLoadObject(ofClass: UIImage.self) {
+            
+            itemProvider.loadObject(ofClass: UIImage.self) { image, error in
+                if let image = image as? UIImage {
+                    
+                    self.uploadImageView.image = image
+                    
+                    picker.dismiss(animated: true,completion: nil)
+                }
+            }
+            
+        }
+        
+    }
 
+    @IBAction func uploadButton(_ sender: Any) {
+    }
+    
 }
