@@ -34,7 +34,7 @@ class SignInVC: UIViewController {
                     
                     let userDictionary = ["email": self.emailText.text!, "username": self.userNameText.text!] as? [String : Any]
                     
-                    fireStore.collection("userInfo").addDocument(data: userDictionary!) { error in
+                    fireStore.collection("UserInfo").addDocument(data: userDictionary!) { error in
                         if error != nil {
                         
                             //
